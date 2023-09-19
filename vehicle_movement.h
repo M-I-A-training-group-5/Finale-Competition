@@ -1,3 +1,8 @@
+/**
+ * @brief remains 5 milliseconds it makes the trigger pin LOW
+
+ * @param t_pin trigger pin
+ */
 void clear_trigger(int t_pin){
     // ultrasonic to get distance
     //  set trigger to low to ensure that the 10 microsecond pulse is pure
@@ -21,12 +26,6 @@ void start_ultrared(int t_pin){
  * @param e_pin echo pin 
  * @param ultrasonic_speed in meter per second
  * @return double the distance in centimeter
- */
-
-/**
- * @brief remains 5 milliseconds it makes the trigger pin LOW
-
- * @param t_pin trigger pin
  */
 double end_ultrasonic_and_get_distance_cm(int t_pin, int e_pin , double ultrasonic_speed)
 {
