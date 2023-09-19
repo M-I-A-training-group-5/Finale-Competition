@@ -59,9 +59,9 @@ void updateYaw() {
     Serial.println(totalYawAngle);  // Print the total yaw angle 
     
     timeBefore = now;  // Update the previous time
+    return totalYawAngle;
+
 }
 }
-float getYAW(){
-  return totalYawAngle;
-}
+
 };
