@@ -1,21 +1,35 @@
+void clear_trigger(int t_pin){
+    // ultrasonic to get distance
+    //  set trigger to low to ensure that the 10 microsecond pulse is pure
+    digitalWrite(t_pin, LOW);
+}
+
 /**
- * @brief it takes 15 milliseconds delay then gives you the distance
+ * @brief remains 10 milliseconds it makes the trigger pin HIGH
+ * @param t_pin  
+ */
+void start_ultrared(int t_pin){
+    // the ultrasonic sound is triggered only when you pulse a 10 microsecond pulse
+    digitalWrite(t_pin, HIGH);
+}
+
+
+/**
+ * @brief no remaining time it gives you the distance
  * 
  * @param t_pin trigger pin
  * @param e_pin echo pin 
  * @param ultrasonic_speed in meter per second
  * @return double the distance in centimeter
  */
-double ultrasonic_distance_cm(int t_pin, int e_pin , double ultrasonic_speed)
-{
 
-    // ultrasonic to get distance
-    //  set trigger to low to ensure that the 10 microsecond pulse is pure
-    digitalWrite(t_pin, LOW);
-    delay(5);
-    // the ultrasonic sound is triggered only when you pulse a 10 microsecond pulse
-    digitalWrite(t_pin, HIGH);
-    delay(10);
+/**
+ * @brief remains 5 milliseconds it makes the trigger pin LOW
+
+ * @param t_pin trigger pin
+ */
+double end_ultrasonic_and_get_distance_cm(int t_pin, int e_pin , double ultrasonic_speed)
+{
     digitalWrite(t_pin, LOW);
 
     /*velocity  = distance/time
