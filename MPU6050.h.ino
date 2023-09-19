@@ -3,10 +3,10 @@ class MPU6050{
 
 private:
   const int MPU6050Address = 0x68;  // MPU6050 address
-  const int gyroZRegister = 0x47;   // Register address for Z-axis 
+  const int gyroXRegister = 0x43;   // Register address for X-axis 
 
-  int16_t yawAngle;  
-  float totalYawAngle = 0.0; // variable to store the total yaw angle
+  int16_t rollAngle;  
+  float totalRollAngle = 0.0; // variable to store the total roll angle
 
   unsigned long timeBefore = 0; // time used to subtract from latest time to get the 
   //time period between each rotation
@@ -32,9 +32,9 @@ public:
     Wire.endTransmission();
   }
 
-void updateYaw() {
+void updateRoll() {
   Wire.beginTransmission(MPU6050Address);
-  Wire.write(gyroZRegister);  // read gyroscope Z-axis input
+  Wire.write(gyroXRegister);  // read gyroscope X-axis input
   Wire.endTransmission();
 
   Wire.requestFrom(MPU6050Address, 2);  // Takes 2 byte data from the sensor
@@ -42,25 +42,25 @@ void updateYaw() {
     byte highByte = Wire.read();  
     byte lowByte = Wire.read();   
 
-    // combine high and low bytes to obtain the complete yaw angle value by shifting the first 8 bits to the left
-    yawAngle = (highByte << 8) | lowByte;
+    // combine high and low bytes to obtain the complete roll angle value by shifting the first 8 bits to the left
+    rollAngle = (highByte << 8) | lowByte;
 
     unsigned long now = millis(); // returns how long the program has been running in MSs
     float time = (now - timeBefore) / 1000.0;  // Converting to seconds
   
-    float angularVelocity = yawAngle / 131.0; // conversion to degrees per second (number may vary depending on the sensor)(check datasheet)
+    float angularVelocity = rollAngle / 131.0; // conversion to degrees per second (number may vary depending on the sensor)(check datasheet)
                                               // datasheet page 31 since this sensor has a range of +-250 
 
-    float deltaYawAngle = angularVelocity * time; // calculate the change in yaw angle over time
+    float deltaRollAngle = angularVelocity * time; // calculate the change in roll angle over time
 
-    totalYawAngle += deltaYawAngle; // add the change in yaw angle to the total yaw angle
+    totalRollAngle += deltaRollAngle; // add the change in roll angle to the total roll angle
     
-    Serial.println(totalYawAngle);  // Print the total yaw angle 
+    Serial.println(totalRollAngle);  // Print the total roll angle 
 
     timeBefore = now;  // Update the previous time
   }
 }
-float getYAW(){
-  return totalYawAngle;
+float getRollAngle(){
+  return totalRollAngle;
 }
 };
