@@ -15,8 +15,6 @@ void setup() {
 Wire.begin();
 Serial.begin(9600);
 
-reasonml
-Copy
 // Configuring the MPU6050 sensor
 Wire.beginTransmission(MPU6050Address);
 Wire.write(0x6B);  // Power management register
@@ -44,8 +42,6 @@ if (Wire.available() >= 2) {
 byte highByte = Wire.read();
 byte lowByte = Wire.read();
 
-pgsql
-Copy
 // combine high and low bytes to obtain the complete yaw angle value by shifting the first 8 bits to the left
 yawAngle = (highByte << 8) | lowByte;
 
@@ -62,9 +58,11 @@ totalYawAngle += deltaYawAngle; // add the change in yaw angle to the total yaw 
 Serial.println(totalYawAngle);  // Print the total yaw angle 
 
 timeBefore = now;  // Update the previous time
-}
-}
-float getYAW(){
 return totalYawAngle;
+
 }
+}
+
+
+
 };
