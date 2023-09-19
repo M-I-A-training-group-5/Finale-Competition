@@ -56,7 +56,7 @@ double end_ultrasonic_and_get_distance_cm(int t_pin, int e_pin , double ultrason
 void move_l298N( int pins[5] , int PWM  ,int rotate){
     int COMMON_ENABLE_PIN = pins[0] ,  in11_pin = pins[1] ,  in21_pin = pins[2]  ,  in12_pin  = pins[3] , in22_pin = pins[4];
 
-    rotate_dir_1 = PWM > 0;
+    int rotate_dir_1 = PWM > 0 , rotate_dir_2;
     if (rotate) rotate_dir_2 =  ! rotate_dir_1;
     else rotate_dir_2 =  rotate_dir_1;
     digitalWrite(in11_pin , rotate_dir_1);
