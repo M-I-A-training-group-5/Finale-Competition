@@ -1,3 +1,5 @@
+#include <math.h>
+
 /**
  * @brief rotate the vehicle of two motors using L298N
  * 
@@ -16,5 +18,5 @@ void move_l298N( int pins[5] , int PWM  ,int rotate){
     digitalWrite(in21_pin , !rotate_dir_1);
     digitalWrite(in12_pin , rotate_dir_2);
     digitalWrite(in22_pin , !rotate_dir_2);
-    analogWrite(COMMON_ENABLE_PIN, PWM);
+    analogWrite(COMMON_ENABLE_PIN, abs(PWM));
 }
