@@ -35,6 +35,11 @@ class PIDController {
       while (output > maximum){
         integral -= maximum;
       }
+      while (output < -maximum) 
+      {
+        integral += maximum;
+      }
+      
       output = kp * error + ki * integral + kd * derivative; ///< Calculate the output value
       return output; ///< Return the output value
     }
