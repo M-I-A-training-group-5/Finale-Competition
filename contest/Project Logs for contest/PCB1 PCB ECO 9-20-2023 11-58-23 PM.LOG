@@ -1,0 +1,27 @@
+Added Component: Designator=*(MPU6050)
+Added Component: Designator=STM*(STM32)
+Added Component: Designator= (Female_Header_4)
+Added Pin To Net: NetName=ECHO Pin= -2
+Added Net: Name=ECHO
+Added Pin To Net: NetName=GND Pin= -1
+Added Pin To Net: NetName=GND Pin=*-GND
+Added Pin To Net: NetName=GND Pin=STM*-GND
+Added Pin To Net: NetName=GND Pin=STM*-GND
+Added Pin To Net: NetName=GND Pin=STM*-GND
+Added Net: Name=GND
+Added Pin To Net: NetName=NetD?_1 Pin=STM*-5V
+Added Net: Name=NetD?_1
+Added Net: Name=NetD?_2
+Added Pin To Net: NetName=SCL Pin=*-SCL
+Added Pin To Net: NetName=SCL Pin=STM*-PB_10
+Added Net: Name=SCL
+Added Pin To Net: NetName=SDA Pin=*-SDA
+Added Pin To Net: NetName=SDA Pin=STM*-PB_11
+Added Net: Name=SDA
+Added Pin To Net: NetName=Trig Pin= -3
+Added Pin To Net: NetName=Trig Pin=STM*-PB_3
+Added Net: Name=Trig
+Added Pin To Net: NetName=VCC Pin= -4
+Added Pin To Net: NetName=VCC Pin=*-VCC
+Added Net: Name=VCC
+Added Class: Name=Sheet1
