@@ -1,5 +1,7 @@
+#include <MPU6050_light.h>
 
-#include "MPU.h"
+
+// #include "MPU.h"
 // #include "PID.h"
 // #include <Timer.h>
 // #include "USS.h"
@@ -10,11 +12,15 @@
 #define t_pin 12
 #define e_pin 11
 
-float offset = 0.0;
+MPU6050 mpu(Wire);
+unsigned long timer = 0;
+
+// float offset = 0.0;
 int pins[5] = {9, 8, 7, 5, 4};
 // Timer my_timer;
 // MPU_6050 mpu;
-MPUPU imu;
+// MPUPU imu;
+// MPU6050 imu;
 // UltrasonicSensor USS(t_pin, e_pin);
 
 // PID pid_controller1(1, 0, 0, 0.01);
@@ -40,7 +46,17 @@ void setup() {
 
   Wire.begin();
   Serial.begin(9600);
-  offset = imu.calibrateGyro();
+  
+  byte status = mpu.begin();
+  Serial.print(F("MPU6050 status: "));
+  Serial.println(status);
+  while(status!=0){ } // stop everything if could not connect to MPU6050
+  
+  Serial.println(F("Calculating offsets, do not move MPU6050"));
+  delay(1000);
+  // mpu.upsideDownMounting = true; // uncomment this line if the MPU6050 is mounted upside-down
+  mpu.calcOffsets(); // gyro and accelero
+  Serial.println("Done!\n");  // offset = imu.calibrateGyro();
 
   for (int i= 0 ; i<5 ;i++){
     pinMode(pins[i] , OUTPUT);
@@ -52,11 +68,16 @@ void setup() {
 }
 
 void loop() {
-  delay(1);
-  
   // put your main code here, to run repeatedly:
 
   // move_l298N(pins, 200, 1 );
-  Serial.println(imu.updateYaw(offset));
+   mpu.update();
+  
+  if((millis()-timer)>10){ // print data every 10ms
+
+	Serial.print("\tZ : ");
+	Serial.println(mpu.getAngleZ());
+	timer = millis();  
+  }
   // Serial.println(USS.getDistance()); 
 }
