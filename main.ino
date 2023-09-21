@@ -25,18 +25,20 @@ UltrasonicSensor USS(t_pin, e_pin, alpha);
 PIDController pid_controller1(0.255, 0, 0, 0.01);
 PIDController pid_controller2(2.83, 0, 0, 0.01);
 
-float move(int distance) {
+float move(int distance)
+{
   float current_distance = 0;
   error = distance - current_distance;
-  while (error != 0){
-  float previous_pos = USS.getFilteredDistance(USS.getInitialDistance());
-  PID_PWM = pid_controller1.calculate(distance, current_distance);
+  while (error != 0)
+  {
+    float previous_pos = USS.getFilteredDistance(USS.getInitialDistance());
+    PID_PWM = pid_controller1.calculate(distance, current_distance);
 
     move_l298N(pins, PID_PWM, 0);
-current_distance += USS.getFilteredDistance(USS.getInitialDistance()) - previous_pos; 
+    current_distance += USS.getFilteredDistance(USS.getInitialDistance()) - previous_pos;
     previous_pos = current_distance;
     error = distance - current_distance;
-}
+  }
   Serial.println("distance reached");
   stopMotors();
   return PID_PWM;
@@ -46,33 +48,39 @@ current_distance += USS.getFilteredDistance(USS.getInitialDistance()) - previous
 //   move_l298N(pinsArr,
 //              pid_controller1.calculate(-distance, USS.getDistance(), 0));
 // }
-void rotateRight() {
-
-    float current_angle = 0;
-  error =  90 - current_angle;
-  while (error != 0){
+float rotateRight()
+{
+  float target_angle = 90.0; // Target angle in degrees
+  float current_angle = 0.0;
+  float error = target_angle - current_angle;
   float previous_pos = mpu.getAngleZ();
-  PID_PWM = pid_controller2.calculate(90, current_angle);
+  float PID_PWM;
 
+  while (abs(error) > 1.0)
+  { // Adjust the tolerance as needed
+    PID_PWM = pid_controller2.calculate(target_angle, current_angle);
     move_l298N(pins, PID_PWM, 1);
-    current_angle += mpu.getAngleZ() - previous_pos; 
-    previous_pos = current_angle;
-    error = 90 - current_angle;
-}
-  Serial.println("degree of rotation reached");
+    current_angle += mpu.getAngleZ() - previous_pos;
+    previous_pos = mpu.getAngleZ();
+    error = target_angle - current_angle;
+  }
+
+  Serial.println("Degree of rotation reached");
   stopMotors();
   return PID_PWM;
 }
+
 // void rotateLeft() {
 //     move_l298N(pinsArr, pid_controller2.calculate(-90, imu.updateYaw()), 1));
 // }
-void stopMotors() { 
-  
+void stopMotors()
+{
+
   move_l298N(pins, 0, 0);
+}
 
- }
-
-void setup() {
+void setup()
+{
 
   Wire.begin();
   Serial.begin(9600);
@@ -81,38 +89,40 @@ void setup() {
   Serial.print(F("MPU6050 status: "));
   Serial.println(status);
 
-  while(status!=0){ } // stop everything if could not connect to MPU6050
-  
+  while (status != 0)
+  {
+  } // stop everything if could not connect to MPU6050
+
   Serial.println(F("Calculating offsets, do not move MPU6050"));
   delay(1000);
   // mpu.upsideDownMounting = true; // uncomment this line if the MPU6050 is mounted upside-down
-  mpu.calcOffsets(); // gyro and accelero
-  Serial.println("Done!\n");  // offset = imu.calibrateGyro();
+  mpu.calcOffsets();         // gyro and accelero
+  Serial.println("Done!\n"); // offset = imu.calibrateGyro();
   // move(1);
   rotateRight();
-  for (int i= 0 ; i<5 ;i++){
-    pinMode(pins[i] , OUTPUT);
-    
+  for (int i = 0; i < 5; i++)
+  {
+    pinMode(pins[i], OUTPUT);
   }
-  
+
   // float current_distance = USS.getDistance() float Yaw =
   // imu.updateYaw() timer.every(1000, timerCallback);
   // imu.setupYaw();
 }
 
-void loop() {
+void loop()
+{
   // put your main code here, to run repeatedly:
 
   // move_l298N(pins, 100, 1 );
-   mpu.update();
-   
+  mpu.update();
 
-  if((millis()-timer)>10){ // print data every 10ms
+  if ((millis() - timer) > 10)
+  { // print data every 10ms
 
-	Serial.print("\tZ : ");
-	Serial.println(mpu.getAngleZ());
-   Serial.println(USS.getFilteredDistance(USS.getInitialDistance()));
-	timer = millis();  
+    Serial.print("\tZ : ");
+    Serial.println(mpu.getAngleZ());
+    Serial.println(USS.getFilteredDistance(USS.getInitialDistance()));
+    timer = millis();
   }
-  
-  }
+}
