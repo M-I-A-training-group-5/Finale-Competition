@@ -9,7 +9,7 @@
 
 #define t_pin 12
 #define e_pin 11
-
+#define alpha 0.4
 MPU6050 mpu(Wire);
 unsigned long timer = 0;
 float error = 0;
@@ -20,21 +20,22 @@ int pins[5] = {9, 8, 7, 5, 4};
 // MPU_6050 mpu;
 // MPUPU imu;
 // MPU6050 imu;
-UltrasonicSensor USS(t_pin, e_pin);
+UltrasonicSensor USS(t_pin, e_pin, alpha);
 
-PIDController pid_controller1(1, 0, 0, 0.01);
+PIDController pid_controller1(0.255, 0, 0, 0.01);
 // PIDController pid_controller2(1, 0, 0, 0.01);
 
 float move(int distance) {
   float current_distance = 0;
   error = distance - current_distance;
   while (error != 0){
-  float previous_pos = USS.getDistance();
+  float previous_pos = USS.getFilteredDistance(USS.getInitialDistance());
   PID_PWM = pid_controller1.calculate(distance, current_distance);
 
     move_l298N(pins, PID_PWM, 0);
-current_distance += USS.getDistance() - previous_pos; 
+current_distance += USS.getFilteredDistance(USS.getInitialDistance()) - previous_pos; 
     previous_pos = current_distance;
+    error = distance - current_distance;
 }
   Serial.println("distance reached");
   stopMotors();
@@ -45,13 +46,31 @@ current_distance += USS.getDistance() - previous_pos;
 //   move_l298N(pinsArr,
 //              pid_controller1.calculate(-distance, USS.getDistance(), 0));
 // }
-// void rotateRight() {
-//     move_l298N(pinsArr, pid_controller2.calculate(90, imu.updateYaw()), 1)) ;
-// }
+void rotateRight() {
+
+    float current_angle = 0;
+  error =  90 - current_angle;
+  while (error != 0){
+  float previous_pos = imu.getAngleZ();
+  PID_PWM = pid_controller1.calculate(90, current_angle);
+
+    move_l298N(pins, PID_PWM, 1);
+    current_angle += imu.getAngleZ() - previous_pos; 
+    previous_pos = current_angle;
+    error = 90 - current_angel;
+}
+  Serial.println("degree of rotation reached");
+  stopMotors();
+  return PID_PWM;
+}
 // void rotateLeft() {
 //     move_l298N(pinsArr, pid_controller2.calculate(-90, imu.updateYaw()), 1));
 // }
-void stopMotors() { move_l298N(pins, 0, 0); }
+void stopMotors() { 
+  
+  move_l298N(pins, 0, 0);
+
+ }
 
 void setup() {
 
@@ -70,6 +89,7 @@ void setup() {
   mpu.calcOffsets(); // gyro and accelero
   Serial.println("Done!\n");  // offset = imu.calibrateGyro();
   // move(1);
+  rotateRight();
   for (int i= 0 ; i<5 ;i++){
     pinMode(pins[i] , OUTPUT);
     
@@ -83,7 +103,7 @@ void setup() {
 void loop() {
   // put your main code here, to run repeatedly:
 
-  move_l298N(pins, 200, 1 );
+  // move_l298N(pins, 100, 1 );
    mpu.update();
    
 
@@ -91,7 +111,7 @@ void loop() {
 
 	Serial.print("\tZ : ");
 	Serial.println(mpu.getAngleZ());
-   Serial.println(USS.getDistance());
+   Serial.println(USS.getFilteredDistance(USS.getInitialDistance()));
 	timer = millis();  
   }
   
