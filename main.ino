@@ -23,7 +23,7 @@ int pins[5] = {9, 8, 7, 5, 4};
 UltrasonicSensor USS(t_pin, e_pin, alpha);
 
 PIDController pid_controller1(0.255, 0, 0, 0.01);
-// PIDController pid_controller2(1, 0, 0, 0.01);
+PIDController pid_controller2(2.83, 0, 0, 0.01);
 
 float move(int distance) {
   float current_distance = 0;
@@ -51,13 +51,13 @@ void rotateRight() {
     float current_angle = 0;
   error =  90 - current_angle;
   while (error != 0){
-  float previous_pos = imu.getAngleZ();
-  PID_PWM = pid_controller1.calculate(90, current_angle);
+  float previous_pos = mpu.getAngleZ();
+  PID_PWM = pid_controller2.calculate(90, current_angle);
 
     move_l298N(pins, PID_PWM, 1);
-    current_angle += imu.getAngleZ() - previous_pos; 
+    current_angle += mpu.getAngleZ() - previous_pos; 
     previous_pos = current_angle;
-    error = 90 - current_angel;
+    error = 90 - current_angle;
 }
   Serial.println("degree of rotation reached");
   stopMotors();
